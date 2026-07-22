@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio Digital | María Alejandra & Elisabet</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Playfair Display y Lora -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        /* Paleta de Colores Vintage (Cálidos, Tierra y Neutros) */
+        :root {
+            --bg-cream: #FAF6EE;
+            --bg-paper: #F3EFE3;
+            --text-walnut: #2E1F15;
+            --accent-terracotta: #C97A53;
+            --accent-sage: #5E6F52;
+            --border-antique: rgba(46, 31, 21, 0.18);
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            color: var(--text-walnut);
+            background-color: var(--bg-cream);
+            line-height: 1.8;
+            overflow-x: hidden;
+            /* Manchas negras/oscuras orgánicas repartidas por el fondo */
+            background-image: 
+                radial-gradient(circle at 5% 12%, rgba(20, 15, 10, 0.08) 0%, rgba(20, 15, 10, 0.05) 120px, transparent 250px),
+                radial-gradient(circle at 95% 25%, rgba(15, 10, 5, 0.09) 0%, rgba(15, 10, 5, 0.04) 180px, transparent 350px),
+                radial-gradient(circle at 10% 65%, rgba(0, 0, 0, 0.07) 0%, rgba(0, 0, 0, 0.03) 150px, transparent 300px),
+                radial-gradient(circle at 88% 85%, rgba(25, 18, 12, 0.08) 0%, rgba(25, 18, 12, 0.04) 200px, transparent 400px);
+            background-attachment: fixed;
+        }
+
+        /* Bloqueo de Scroll al abrir menú o modal */
+        body.scroll-locked {
+            overflow: hidden !important;
+        }
+
+        h1, h2, h3, h4, .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--text-walnut);
+        }
+
+        /* BARRA SUPERIOR Y MENÚ HAMBURGUESA ARRIBA A LA IZQUIERDA */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: rgba(250, 246, 238, 0.95);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid var(--border-antique);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hamburger-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+        .hamburger-btn:hover {
+            background-color: var(--bg-paper);
+        }
+        .hamburger-btn span {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-walnut);
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* DRAWER / OFF-CANVAS SLIDING PANEL */
+        .scrim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(20, 15, 10, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .scrim.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            max-width: 80vw;
+            height: 100vh;
+            background-color: var(--bg-cream);
+            border-right: 1px solid var(--border-antique);
+            z-index: 1050;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 24px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.15);
+        }
+        .nav-drawer.is-open {
+            transform: translateX(0);
+        }
+        .drawer-nav-link {
+            color: var(--text-walnut);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            padding: 12px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+        .drawer-nav-link:hover {
+            background-color: var(--bg-paper);
+            color: var(--accent-sage);
+        }
+
+        /* SECCIONES Y TARJETAS PROTEGIDAS DE LAS MANCHAS DEL FONDO */
+        .hero-section {
+            background-color: var(--bg-paper);
+            padding: 100px 0;
+            border-bottom: 1px solid var(--border-antique);
+            position: relative;
+        }
+
+        /* Los recuadros de los proyectos tienen fondo sólido opaco */
+        .project-card {
+            border: 1px solid var(--border-antique);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #FCFAF5; /* Fondo totalmente opaco que aísla de las manchas */
+            height: 100%;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 4px 15px rgba(46, 31, 21, 0.05);
+            cursor: pointer;
+        }
+        .project-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(46, 31, 21, 0.12);
+        }
+
+        .img-container {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background-color: var(--bg-paper);
+            border-bottom: 1px solid var(--border-antique);
+        }
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: sepia(15%) contrast(90%);
+            transition: transform 0.6s ease;
+        }
+        .project-card:hover .img-container img {
+            transform: scale(1.05);
+        }
+
+        .badge-category {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            border: 1px solid rgba(46, 31, 21, 0.4);
+            color: var(--text-walnut);
+            background-color: transparent;
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        .info-card {
+            background-color: var(--bg-paper);
+            border: 1px double var(--text-walnut);
+            border-radius: 12px;
+            padding: 40px 30px;
+        }
+
+        .btn-vintage {
+            background-color: var(--accent-sage);
+            color: #FAF6EE !important;
+            border: none;
+            padding: 12px 30px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-vintage:hover {
+            background-color: #4A5740;
+        }
+
+        /* MODAL / VISOR PARA EL PROYECTO 1 */
+        .project-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(20, 15, 10, 0.8);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+        .project-modal.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content-box {
+            background-color: var(--bg-cream);
+            border: 1px solid var(--border-antique);
+            border-radius: 12px;
+            max-width: 800px;
+            width: 100%;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .modal-img {
+            width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid var(--border-antique);
+            background-color: var(--bg-paper);
+        }
+
+        footer {
+            background-color: var(--bg-paper);
+            border-top: 1px solid var(--border-antique);
+            color: var(--text-walnut);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR CON BOTÓN HAMBURGUESA A LA IZQUIERDA -->
+    <header class="top-bar">
+        <button id="hamburgerBtn" class="hamburger-btn" aria-expanded="false" aria-controls="navDrawer" aria-label="Abrir menú de navegación">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="navbar-brand m-0 fs-4">
+            <i class="bi bi-feather me-2"></i>M & E Digital
+        </div>
+        <div style="width: 38px;"></div> <!-- Espaciador para centrar el título -->
+    </header>
+
+    <!-- CAPA OSCURA (SCRIM) Y PANEL DESPLEGABLE (NAVIGATION DRAWER) -->
+    <div id="scrim" class="scrim"></div>
+
+    <nav id="navDrawer" class="nav-drawer" aria-label="Menú principal">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+            <span class="fs-5 fw-bold" style="font-family: 'Playfair Display', serif;">Menú</span>
+            <button id="closeDrawerBtn" class="btn-close" aria-label="Cerrar menú"></button>
+        </div>
+        <a class="drawer-nav-link" href="#inicio">Inicio</a>
+        <a class="drawer-nav-link" href="#sobre-nosotras">Nosotras</a>
+        <a class="drawer-nav-link" href="#galeria">Galería</a>
+        <a class="drawer-nav-link" href="#contacto">Contacto</a>
+    </nav>
+
+    <!-- SECCIÓN DE BIENVENIDA (HERO) -->
+    <section id="inicio" class="hero-section text-center">
+        <div class="container py-4">
+            <span class="badge-category mb-4" style="border-radius: 20px;">Integración de Contenidos Digitales</span>
+            <h1 class="display-3 mb-3" style="font-style: italic;">Bitácora de Trabajos</h1>
+            <p class="lead fs-5 mx-auto mb-4" style="max-width: 650px;">
+                Un espacio estético y pausado donde recopilamos las ideas, composiciones y aprendizajes interactivos que hemos diseñado juntos.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#galeria" class="btn-vintage rounded-2">Nuestras Obras</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN SOBRE NOSOTRAS -->
+    <section id="sobre-nosotras" class="py-5">
+        <div class="container py-4">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <span class="text-uppercase small fw-bold" style="color: var(--accent-terracotta); letter-spacing: 2px;">El Origen</span>
+                    <h2 class="display-5 mt-2 mb-4">¿Quiénes Somos?</h2>
+                    <p class="fs-5">
+                        Somos <strong>María Alejandra Restrepo Moncada</strong> y <strong>Elisabet Carvajal Tamayo</strong>, estudiantes de grado décimo de la <strong>Institución Educativa Aureliano Flórez Cardona</strong>, en Anserma, Caldas.
+                    </p>
+                    <p class="fs-5">
+                        En nuestra especialidad técnica de <strong>Integración de Contenidos Digitales</strong>, buscamos el balance perfecto entre la solidez del código web, la armonía visual y la expresión artística.
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="info-card text-center">
+                        <i class="bi bi-book display-3 mb-3" style="color: var(--accent-sage);"></i>
+                        <h4 class="fw-bold mb-2">I.E. Aureliano Flórez Cardona</h4>
+                        <p class="mb-3" style="font-style: italic;">Anserma, Caldas</p>
+                        <hr class="my-3 mx-auto" style="width: 60px; border-top: 1px solid var(--text-walnut);">
+                        <p class="small text-uppercase fw-bold mb-1" style="letter-spacing: 1px; color: var(--accent-terracotta);">Especialidad Técnica</p>
+                        <span class="fs-6 fw-semibold">Integración de Contenidos Digitales</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN GALERÍA DE TRABAJOS (SOLO 3 PROYECTOS) -->
+    <section id="galeria" class="py-5" style="background-color: rgba(243, 239, 227, 0.85) !important; border-top: 1px solid var(--border-antique); border-bottom: 1px solid var(--border-antique);">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="display-5">Galería Selecta</h2>
+                <p class="fs-5" style="font-style: italic; color: var(--accent-sage);">Haz clic sobre el Proyecto 1 para visualizar su imagen completa</p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <!-- PROYECTO 1 (CON INTERACTIVIDAD) -->
+                <div class="col-md-6 col-lg-4">
+                    <div id="proyecto1Card" class="project-card" role="button" aria-label="Ver Proyecto 1">
+                        <div class="img-container">
+                            <!-- Apunta por defecto a la carpeta portafolio/imagen1.jpg -->
+                            <img src="portafolio/imagen1.jpg" alt="Proyecto 1" onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3EFE3/2E1F15?text=portafolio/imagen1.jpg';">
+                        </div>
+                        <div class="card-body p-4">
+                            <span class="badge-category mb-2">Identidad & Color</span>
+                            <h4 class="card-title h5 my-2">Proyecto 1</h4>
+                            <p class="card-text small">Presiona aquí para ampliar y visualizar la imagen de la carpeta <code>portafolio/</code>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROYECTO 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="project-card">
+                        <div class="img-container">
+                            <img src="Imágenes/Galería/02.jfif" alt="Proyecto 02" onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3EFE3/2E1F15?text=Proyecto+2';">
+                        </div>
+                        <div class="card-body p-4">
+                            <span class="badge-category mb-2">Estructura Web</span>
+                            <h4 class="card-title h5 my-2">Proyecto 2</h4>
+                            <p class="card-text small">Maquetación semántica y organización de contenidos mediante código estructurado.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROYECTO 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="project-card">
+                        <div class="img-container">
+                            <img src="Imágenes/Galería/03.jfif" alt="Proyecto 03" onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3EFE3/2E1F15?text=Proyecto+3';">
+                        </div>
+                        <div class="card-body p-4">
+                            <span class="badge-category mb-2">Diseño Vectorial</span>
+                            <h4 class="card-title h5 my-2">Proyecto 3</h4>
+                            <p class="card-text small">Optimización e integración de elementos gráficos digitales escalables.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL / VISOR PARA EL PROYECTO 1 -->
+    <div id="projectModal" class="project-modal" aria-hidden="true" role="dialog">
+        <div class="modal-content-box text-center">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h4 mb-0">Imagen del Proyecto 1</h3>
+                <button id="closeModalBtn" class="btn-close" aria-label="Cerrar ventana"></button>
+            </div>
+            <!-- Carga de la imagen dentro de la carpeta portafolio/ -->
+            <img src="portafolio/imagen1.jpg" alt="Proyecto 1 - Portafolio" class="modal-img mb-3" onerror="this.onerror=null; this.src='https://placehold.co/800x600/F3EFE3/2E1F15?text=portafolio/imagen1.jpg';">
+            <p class="text-muted small mb-0">Ubicación física: <code>1.jpg</code></p>
+        </div>
+    </div>
+
+    <!-- SECCIÓN CONTACTO -->
+    <section id="contacto" class="py-5">
+        <div class="container py-4" style="max-width: 600px;">
+            <div class="text-center mb-5">
+                <h2 class="display-5">Contacto</h2>
+                <p style="font-style: italic;">¿Tienes dudas o sugerencias? Nos encantará leerte.</p>
+            </div>
+            <form action="#" method="POST" class="p-4 p-md-5 rounded-3 shadow-sm border" style="background-color: #FCFAF5; border-color: var(--border-antique) !important;">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label fw-bold small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Nombre Completo</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="Ej: María Alejandra" required>
+                </div>
+                <div class="mb-3">
+                    <label for="correo" class="form-label fw-bold small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="correo" placeholder="correo@ejemplo.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="mensaje" class="form-label fw-bold small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Mensaje</label>
+                    <textarea class="form-control" id="mensaje" rows="4" placeholder="Escribe tus sugerencias aquí..." required></textarea>
+                </div>
+                <button type="submit" class="btn-vintage w-100 rounded-2 mt-2">Enviar Mensaje</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-5">
+        <div class="container">
+            <p class="mb-1 fw-bold fs-5" style="font-style: italic;">María Alejandra & Elisabet</p>
+            <p class="small text-uppercase mb-3" style="letter-spacing: 1px; color: var(--accent-sage); font-weight: 600;">Integración de Contenidos Digitales</p>
+            <p class="small mb-0" style="opacity: 0.8;">&copy; 2026 Institución Educativa Aureliano Flórez Cardona. Anserma, Caldas.</p>
+        </div>
+    </footer>
+
+    <!-- PROGRAMACIÓN JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ELEMENTOS DEL MENÚ HAMBURGUESA / DRAWER
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const navDrawer = document.getElementById('navDrawer');
+            const scrim = document.getElementById('scrim');
+            const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+            const drawerNavLinks = document.querySelectorAll('.drawer-nav-link');
+
+            // APERTURA DEL MENÚ
+            function openDrawer() {
+                hamburgerBtn.setAttribute('aria-expanded', 'true');
+                navDrawer.classList.add('is-open');
+                scrim.classList.add('is-open');
+                document.body.classList.add('scroll-locked');
+            }
+
+            // CIERRE DEL MENÚ
+            function closeDrawer() {
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
+                navDrawer.classList.remove('is-open');
+                scrim.classList.remove('is-open');
+                document.body.classList.remove('scroll-locked');
+                hamburgerBtn.focus(); // Devuelve el foco al botón hamburguesa
+            }
+
+            hamburgerBtn.addEventListener('click', () => {
+                const isOpen = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+                if (isOpen) {
+                    closeDrawer();
+                } else {
+                    openDrawer();
+                }
+            });
+
+            closeDrawerBtn.addEventListener('click', closeDrawer);
+            scrim.addEventListener('click', closeDrawer);
+
+            drawerNavLinks.forEach(link => {
+                link.addEventListener('click', closeDrawer);
+            });
+
+            // ELEMENTOS DEL MODAL PROYECTO 1
+            const proyecto1Card = document.getElementById('proyecto1Card');
+            const projectModal = document.getElementById('projectModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+
+            function openModal() {
+                projectModal.classList.add('is-active');
+                projectModal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('scroll-locked');
+            }
+
+            function closeModal() {
+                projectModal.classList.remove('is-active');
+                projectModal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('scroll-locked');
+            }
+
+            proyecto1Card.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+
+            projectModal.addEventListener('click', (e) => {
+                if (e.target === projectModal) {
+                    closeModal();
+                }
+            });
+
+            // TECLA ESCAPE PARA CERRAR TANTO EL MENÚ COMO EL MODAL
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (navDrawer.classList.contains('is-open')) {
+                        closeDrawer();
+                    }
+                    if (projectModal.classList.contains('is-active')) {
+                        closeModal();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
