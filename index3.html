@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio Digital | Galería de Proyectos</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Playfair Display y Lora -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-cream: #FAF6EE;
+            --bg-paper: #F3EFE3;
+            --text-walnut: #2E1F15;
+            --accent-terracotta: #C97A53;
+            --accent-sage: #5E6F52;
+            --border-antique: rgba(46, 31, 21, 0.18);
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            color: var(--text-walnut);
+            background-color: var(--bg-cream);
+            line-height: 1.8;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 5% 12%, rgba(20, 15, 10, 0.08) 0%, rgba(20, 15, 10, 0.05) 120px, transparent 250px),
+                radial-gradient(circle at 95% 25%, rgba(15, 10, 5, 0.09) 0%, rgba(15, 10, 5, 0.04) 180px, transparent 350px),
+                radial-gradient(circle at 10% 65%, rgba(0, 0, 0, 0.07) 0%, rgba(0, 0, 0, 0.03) 150px, transparent 300px),
+                radial-gradient(circle at 88% 85%, rgba(25, 18, 12, 0.08) 0%, rgba(25, 18, 12, 0.04) 200px, transparent 400px);
+            background-attachment: fixed;
+        }
+
+        body.scroll-locked {
+            overflow: hidden !important;
+        }
+
+        h1, h2, h3, h4, .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--text-walnut);
+        }
+
+        /* HEADER Y MENÚ */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: rgba(250, 246, 238, 0.95);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid var(--border-antique);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hamburger-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+        .hamburger-btn:hover {
+            background-color: var(--bg-paper);
+        }
+        .hamburger-btn span {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-walnut);
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .scrim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(20, 15, 10, 0.5);
+            backdrop-filter: blur(2px);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .scrim.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            max-width: 80vw;
+            height: 100vh;
+            background-color: var(--bg-cream);
+            border-right: 1px solid var(--border-antique);
+            z-index: 1050;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 24px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.15);
+        }
+        .nav-drawer.is-open {
+            transform: translateX(0);
+        }
+        .drawer-nav-link {
+            color: var(--text-walnut);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            padding: 12px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+        .drawer-nav-link:hover {
+            background-color: var(--bg-paper);
+            color: var(--accent-sage);
+        }
+
+        /* SECCIONES */
+        .hero-section {
+            background-color: var(--bg-paper);
+            padding: 90px 0;
+            border-bottom: 1px solid var(--border-antique);
+        }
+
+        .project-card {
+            border: 1px solid var(--border-antique);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #FCFAF5;
+            height: 100%;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 4px 15px rgba(46, 31, 21, 0.05);
+            cursor: pointer;
+        }
+        .project-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(46, 31, 21, 0.12);
+        }
+
+        .img-container {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background-color: var(--bg-paper);
+            border-bottom: 1px solid var(--border-antique);
+        }
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+        .project-card:hover .img-container img {
+            transform: scale(1.05);
+        }
+
+        .badge-category {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            border: 1px solid rgba(46, 31, 21, 0.4);
+            color: var(--text-walnut);
+            background-color: transparent;
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        .btn-vintage {
+            background-color: var(--accent-sage);
+            color: #FAF6EE !important;
+            border: none;
+            padding: 12px 30px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-vintage:hover {
+            background-color: #4A5740;
+        }
+
+        /* MODAL / VISOR */
+        .project-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(20, 15, 10, 0.8);
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+        .project-modal.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content-box {
+            background-color: var(--bg-cream);
+            border: 1px solid var(--border-antique);
+            border-radius: 12px;
+            max-width: 850px;
+            width: 100%;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .modal-img {
+            width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid var(--border-antique);
+            background-color: var(--bg-paper);
+        }
+
+        footer {
+            background-color: var(--bg-paper);
+            border-top: 1px solid var(--border-antique);
+            color: var(--text-walnut);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <header class="top-bar">
+        <button id="hamburgerBtn" class="hamburger-btn" aria-expanded="false" aria-controls="navDrawer" aria-label="Abrir menú de navegación">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="navbar-brand m-0 fs-4">
+            <i class="bi bi-feather me-2"></i>Galería de Proyectos
+        </div>
+        <div style="width: 38px;"></div>
+    </header>
+
+    <!-- MENÚ LATERAL -->
+    <div id="scrim" class="scrim"></div>
+
+    <nav id="navDrawer" class="nav-drawer" aria-label="Menú principal">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+            <span class="fs-5 fw-bold" style="font-family: 'Playfair Display', serif;">Navegación</span>
+            <button id="closeDrawerBtn" class="btn-close" aria-label="Cerrar menú"></button>
+        </div>
+        <a class="drawer-nav-link" href="#inicio">Inicio</a>
+        <a class="drawer-nav-link" href="#galeria">Galería</a>
+        <a class="drawer-nav-link" href="#contacto">Contacto</a>
+    </nav>
+
+    <!-- INICIO -->
+    <section id="inicio" class="hero-section text-center">
+        <div class="container py-4">
+            <span class="badge-category mb-4" style="border-radius: 20px;">Diseño & Contenidos Digitales</span>
+            <h1 class="display-3 mb-3" style="font-style: italic;">Galería Visual</h1>
+            <p class="lead fs-5 mx-auto mb-4" style="max-width: 650px;">
+                Muestra selecta de proyectos interactivos, modelado 3D e ilustración digital.
+            </p>
+            <a href="#galeria" class="btn-vintage rounded-2">Explorar Galería</a>
+        </div>
+    </section>
+
+    <!-- GALERÍA DE IMÁGENES (Ruta: carpeta de imagenes/) -->
+    <section id="galeria" class="py-5" style="background-color: rgba(243, 239, 227, 0.85) !important; border-top: 1px solid var(--border-antique); border-bottom: 1px solid var(--border-antique);">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="display-5">Proyectos Destacados</h2>
+                <p class="fs-5" style="font-style: italic; color: var(--accent-sage);">Haz clic en cualquiera de las imágenes para ampliar</p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <!-- PROYECTO 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div id="proyecto1Card" class="project-card" role="button" aria-label="Ver Proyecto 1">
+                        <div class="img-container">
+                            <img src="1.jpg" alt="Modelado 3D en Blender" onerror="this.onerror=null; this.src='1.jpg';">
+                        </div>
+                        <div class="card-body p-4">
+                            <span class="badge-category mb-2">Modelado 3D</span>
+                            <h4 class="card-title h5 my-2">Proyecto 1</h4>
+                            <p class="card-text small">Modelado y renderizado orgánico en software 3D (<code>carpeta de imagenes/1.jpg</code>).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROYECTO 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div id="proyecto2Card" class="project-card" role="button" aria-label="Ver Proyecto 2">
+                        <div class="img-container">
+                            <img src="carpeta de imagenes/2.jpg" alt="Diseño Vectorial" onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3EFE3/2E1F15?text=2.jpg';">
+                        </div>
+                        <div class="card-body p-4">
+                            <span class="badge-category mb-2">Diseño Vectorial</span>
+                            <h4 class="card-title h5 my-2">Proyecto 2</h4>
+                            <p class="card-text small">Trazado e ilustración vectorial de silueta corporativa (<code>carpeta de imagenes/2.jpg</code>).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROYECTO 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div id="proyecto3Card" class="project-card" role="button" aria-label="Ver Proyecto 3">
+                        <div class="img-container">
+                            <img src="carpeta de imagenes/3.jpg" alt="Afiche Publicitario" onerror="this.onerror=null; this.src='https://placehold.co/600x400/F3EFE3/2E1F15?text=3.jpg';">
+                        </div>
+                        <div class="card-body p-4">
+                            <span class="badge-category mb-2">Diseño Publicitario</span>
+                            <h4 class="card-title h5 my-2">Proyecto 3</h4>
+                            <p class="card-text small">Diseño de afiche conmemorativo y composición gráfica (<code>carpeta de imagenes/3.jpg</code>).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL 1 -->
+    <div id="projectModal1" class="project-modal" aria-hidden="true" role="dialog">
+        <div class="modal-content-box text-center">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h4 mb-0">Proyecto 1 - Modelado 3D</h3>
+                <button id="closeModal1Btn" class="btn-close" aria-label="Cerrar ventana"></button>
+            </div>
+            <img src="carpeta de imagenes/1.jpg" alt="Modelado 3D" class="modal-img mb-3" onerror="this.onerror=null; this.src='https://placehold.co/800x600/F3EFE3/2E1F15?text=1.jpg';">
+            <p class="text-muted small mb-0">Ruta: <code>carpeta de imagenes/1.jpg</code></p>
+        </div>
+    </div>
+
+    <!-- MODAL 2 -->
+    <div id="projectModal2" class="project-modal" aria-hidden="true" role="dialog">
+        <div class="modal-content-box text-center">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h4 mb-0">Proyecto 2 - Diseño Vectorial</h3>
+                <button id="closeModal2Btn" class="btn-close" aria-label="Cerrar ventana"></button>
+            </div>
+            <img src="carpeta de imagenes/2.jpg" alt="Diseño Vectorial" class="modal-img mb-3" onerror="this.onerror=null; this.src='https://placehold.co/800x600/F3EFE3/2E1F15?text=2.jpg';">
+            <p class="text-muted small mb-0">Ruta: <code>carpeta de imagenes/2.jpg</code></p>
+        </div>
+    </div>
+
+    <!-- MODAL 3 -->
+    <div id="projectModal3" class="project-modal" aria-hidden="true" role="dialog">
+        <div class="modal-content-box text-center">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h4 mb-0">Proyecto 3 - Afiche Publicitario</h3>
+                <button id="closeModal3Btn" class="btn-close" aria-label="Cerrar ventana"></button>
+            </div>
+            <img src="carpeta de imagenes/3.jpg" alt="Afiche Publicitario" class="modal-img mb-3" onerror="this.onerror=null; this.src='https://placehold.co/800x600/F3EFE3/2E1F15?text=3.jpg';">
+            <p class="text-muted small mb-0">Ruta: <code>carpeta de imagenes/3.jpg</code></p>
+        </div>
+    </div>
+
+    <!-- SECCIÓN CONTACTO -->
+    <section id="contacto" class="py-5">
+        <div class="container py-4" style="max-width: 600px;">
+            <div class="text-center mb-5">
+                <h2 class="display-5">Contacto</h2>
+                <p style="font-style: italic;">Envíanos tus comentarios o consultas.</p>
+            </div>
+            <form action="#" method="POST" class="p-4 p-md-5 rounded-3 shadow-sm border" style="background-color: #FCFAF5; border-color: var(--border-antique) !important;">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label fw-bold small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Nombre Completo</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="Tu nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="correo" class="form-label fw-bold small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="correo" placeholder="correo@ejemplo.com" required>
+                </div>
+                <div class="mb-3">
+                    <label for="mensaje" class="form-label fw-bold small text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Mensaje</label>
+                    <textarea class="form-control" id="mensaje" rows="4" placeholder="Escribe tu mensaje..." required></textarea>
+                </div>
+                <button type="submit" class="btn-vintage w-100 rounded-2 mt-2">Enviar Mensaje</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-4">
+        <div class="container">
+            <p class="small text-uppercase mb-1" style="letter-spacing: 1px; color: var(--accent-sage); font-weight: 600;">Portafolio de Contenidos Digitales</p>
+            <p class="small mb-0" style="opacity: 0.8;">&copy; 2026 Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const navDrawer = document.getElementById('navDrawer');
+            const scrim = document.getElementById('scrim');
+            const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+            const drawerNavLinks = document.querySelectorAll('.drawer-nav-link');
+
+            function openDrawer() {
+                hamburgerBtn.setAttribute('aria-expanded', 'true');
+                navDrawer.classList.add('is-open');
+                scrim.classList.add('is-open');
+                document.body.classList.add('scroll-locked');
+            }
+
+            function closeDrawer() {
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
+                navDrawer.classList.remove('is-open');
+                scrim.classList.remove('is-open');
+                document.body.classList.remove('scroll-locked');
+            }
+
+            hamburgerBtn.addEventListener('click', () => {
+                if (hamburgerBtn.getAttribute('aria-expanded') === 'true') {
+                    closeDrawer();
+                } else {
+                    openDrawer();
+                }
+            });
+
+            closeDrawerBtn.addEventListener('click', closeDrawer);
+            scrim.addEventListener('click', closeDrawer);
+            drawerNavLinks.forEach(link => link.addEventListener('click', closeDrawer));
+
+            // MANEJO DE MODALES
+            function openModal(modal) {
+                modal.classList.add('is-active');
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('scroll-locked');
+            }
+
+            function closeModal(modal) {
+                modal.classList.remove('is-active');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('scroll-locked');
+            }
+
+            const proyecto1Card = document.getElementById('proyecto1Card');
+            const projectModal1 = document.getElementById('projectModal1');
+            const closeModal1Btn = document.getElementById('closeModal1Btn');
+
+            proyecto1Card.addEventListener('click', () => openModal(projectModal1));
+            closeModal1Btn.addEventListener('click', () => closeModal(projectModal1));
+            projectModal1.addEventListener('click', (e) => { if (e.target === projectModal1) closeModal(projectModal1); });
+
+            const proyecto2Card = document.getElementById('proyecto2Card');
+            const projectModal2 = document.getElementById('projectModal2');
+            const closeModal2Btn = document.getElementById('closeModal2Btn');
+
+            proyecto2Card.addEventListener('click', () => openModal(projectModal2));
+            closeModal2Btn.addEventListener('click', () => closeModal(projectModal2));
+            projectModal2.addEventListener('click', (e) => { if (e.target === projectModal2) closeModal(projectModal2); });
+
+            const proyecto3Card = document.getElementById('proyecto3Card');
+            const projectModal3 = document.getElementById('projectModal3');
+            const closeModal3Btn = document.getElementById('closeModal3Btn');
+
+            proyecto3Card.addEventListener('click', () => openModal(projectModal3));
+            closeModal3Btn.addEventListener('click', () => closeModal(projectModal3));
+            projectModal3.addEventListener('click', (e) => { if (e.target === projectModal3) closeModal(projectModal3); });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (navDrawer.classList.contains('is-open')) closeDrawer();
+                    if (projectModal1.classList.contains('is-active')) closeModal(projectModal1);
+                    if (projectModal2.classList.contains('is-active')) closeModal(projectModal2);
+                    if (projectModal3.classList.contains('is-active')) closeModal(projectModal3);
+                }
+            });
+        });
+    </script>
+</body>
+</html><!-- El botón que presiona el usuario -->
+<a href="#mi-galeria">Ver Galería (X)</a>
+
+<!-- ... resto de tu contenido ... -->
+
+<!-- Tu sección de galería más abajo -->
+<section id="mi-galeria">
+  <h2>Mi Galería</h2>
+  <img src="ruta/a/tu/imagen1.jpg" alt="Descripción 1">
+  <img src="ruta/a/tu/imagen2.jpg" alt="Descripción 2">
+</section>
